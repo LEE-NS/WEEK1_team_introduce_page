@@ -1,0 +1,12 @@
+name: 'Deploy to GitHub Pages'
+description: 'Deploy static files to GitHub Pages'
+author: 'LEE-NS'
+
+inputs:
+  API_KEY:
+    description: 'API key for deployment'
+    required: true
+
+runs:
+  using: 'node12'
+  main: './script/script_visitors.js'
