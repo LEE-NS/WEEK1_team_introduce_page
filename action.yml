@@ -8,5 +8,4 @@ inputs:
     required: true
 
 runs:
-  using: 'node20'
   main: 'script/script_visitors.mjs'
