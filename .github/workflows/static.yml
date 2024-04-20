@@ -12,8 +12,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v1
-        
+
+      - name: 리스트 확인
+        run: ls -al
+              
       - name: Github pages 배포
-        run: LEE-NS/WEEK1_team_introduce_page@main
+        uses: LEE-NS/WEEK1_team_introduce_page@main
         env:
           API_KEY: ${{secrets.API_KEY}}
