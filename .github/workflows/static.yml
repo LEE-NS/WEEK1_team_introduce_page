@@ -14,11 +14,6 @@ jobs:
         
       - name: node 설치
         uses: actions/setup-node@v1
-        with:
-          node-version: '16'
-        
-      - name: npm 설치
-        run: npm install
         
       - name: Github pages 배포
         uses: LEE-NS/WEEK1_team_introduce_page@main
