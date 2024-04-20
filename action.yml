@@ -9,4 +9,4 @@ inputs:
 
 runs:
   using: 'node12'
-  main: 'script/script_visitors.js'
+  main: 'script/script_visitors.mjs'
