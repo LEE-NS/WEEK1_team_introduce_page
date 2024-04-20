@@ -1,4 +1,4 @@
-name: apiKey
+name: 배포
 
 on:
   push:
@@ -11,11 +11,14 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v1
-      - name: setup node
+        
+      - name: node 설치
         uses: actions/setup-node@v1
-      - name: Install dependencies
+        
+      - name: npm 설치
         run: npm install
-      - name: Deploy to GitHub Pages
+        
+      - name: Github pages 배포
         uses: LEE-NS/WEEK1_team_introduce_page@main
         env:
           API_KEY: ${{secrets.API_KEY}}
