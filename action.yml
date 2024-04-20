@@ -8,4 +8,4 @@ inputs:
     required: true
 
 runs:
-  main: 'index.html'
+  main: 'script/script_visitors.mjs'
