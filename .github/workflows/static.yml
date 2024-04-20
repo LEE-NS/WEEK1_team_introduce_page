@@ -12,9 +12,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v1
         
-      - name: node 설치
-        uses: actions/setup-node@v1
-        
       - name: Github pages 배포
         uses: LEE-NS/WEEK1_team_introduce_page@main
         env:
