@@ -8,4 +8,5 @@ inputs:
     required: true
 
 runs:
+  using: 'chrome'
   main: './index.html'
