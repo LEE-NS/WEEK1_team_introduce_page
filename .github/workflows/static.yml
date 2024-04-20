@@ -17,6 +17,6 @@ jobs:
         run: ls -al
               
       - name: Github pages 배포
-        uses: LEE-NS/WEEK1_team_introduce_page@main
+        run: LEE-NS/WEEK1_team_introduce_page@main
         env:
           API_KEY: ${{secrets.API_KEY}}
