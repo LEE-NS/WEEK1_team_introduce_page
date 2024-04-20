@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - main
+      
 jobs:
-  get-api-key:
+  Static-HTML-Deplyoing-with-API-key-Hiding:
     runs-on: ubuntu-latest
 
     steps:
