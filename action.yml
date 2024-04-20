@@ -8,5 +8,5 @@ inputs:
     required: true
 
 runs:
-  using: 'node12'
-  main: 'script/script_visitors.mjs'
+  using: 'node'
+  main: 'script/script_visitors.js'
