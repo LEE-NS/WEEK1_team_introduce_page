@@ -149,12 +149,19 @@ async function deleteReply(target) {
     const targetId = targetIdPosition.replace(/작성자\s+:\s/, '');
     
     const userDoc = doc(db, 'comment', targetId);
-    if(confirm('코멘트를 삭제할까요?')) {
+    const docSnapshot = await getDoc(userDoc);
+
+    const replyPW = docSnapshot.data().pw;
+
+    let pwConfirm = prompt("비밀번호를 입력해주세요.");
+
+    if(pwConfirm === replyPW) {
         await deleteDoc(userDoc);
         window.location.reload();
     } else {
+        alert('비밀번호가 다릅니다')
         return
-    }
+    };
     /*
     <db 연결 전 코드>
     const removeTarget = target.closest("li");
