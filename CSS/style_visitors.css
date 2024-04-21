@@ -79,12 +79,35 @@ body {
     margin: 0 auto;
     text-align: center;
 }
+.reply_section .authen {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 10%;
+    height: 75px;
+    border-radius: 10px;
+}
+.authen input {
+    width: 100%;
+    height: 45%;
+    border: 1px solid #313131;
+    border-radius: 10px;
+    text-indent: 5px;
+
+    font-size: 16px;
+    background-color: #000000;
+    color: white;
+}
+.authen input:focus {
+    outline: 2px solid #afafaf;
+}
 .write .reply_textarea {
-    width: 84%;
+    width: 74%;
     height: 75px;
     padding: 10px 20px;
     margin-right: 1%;
     font-size: 16px;
+    border: 1px solid #313131;
     border-radius: 10px;
     resize: none;
     
@@ -104,7 +127,7 @@ body {
     min-height: 300px;
 }
 .write .reply_textarea:focus {
-    outline: 2px solid #313131;
+    outline: 2px solid #afafaf;
 }
 .write .reply_textarea::placeholder {
     font-style: italic;
@@ -166,19 +189,19 @@ body {
 .reply_section ul li:last-child {
     border-bottom: none;
 }
-.texts div {
+.texts {
     width: 100%;
 }
 .texts .texts_reply {
     display: block;
-    width: 70%;
+    width: 62%;
     word-break: break-all;
-    margin-right: 20px;
+    margin: 0 20px;
 }
 .texts .reply_textarea {
-    width: 70%;
+    width: 62%;
     height: 75px;
-    margin-right: 20px;
+    margin: 0 20px;
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 10px;
@@ -193,16 +216,6 @@ body {
 }
 .texts .texts_inf span {
     margin: 0 3px;
-}
-.texts .texts_inf .complete {
-    display: none;
-    margin: 0 2px;
-    color: #b1b1b1;
-    transition: color 0.2s;
-}
-.texts .texts_inf .complete:hover {
-    transition: color 0.2s;
-    color: white;
 }
 .texts .texts_inf .fix {
     margin: 0 2px;
@@ -219,6 +232,21 @@ body {
     transition: color 0.2s;
 
     display: none;
+}
+.texts .texts_inf .complete:hover {
+    transition: color 0.2s;
+    color: white;
+}
+.texts .texts_inf .cancel{
+    margin: 0 2px;
+    color: #b1b1b1;
+    transition: color 0.2s;
+
+    display: none;
+}
+.texts .texts_inf .cancel:hover{
+    transition: color 0.2s;
+    color: white;
 }
 .texts .texts_inf .delete {
     margin: 0 2px;

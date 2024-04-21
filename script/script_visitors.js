@@ -22,8 +22,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-
-
 /* <조원의 이름에 따라 '/' 이후에 오는 이름이 바뀌는 기능> */
 /* let urlParams = new URLSearchParams(window.location.search); // URL에서 물음표(?) 이후에 오는 부분 가져오기
 let referrer = urlParams.get('referrer'); // referrer 속성의 값 가져오기
@@ -54,7 +52,9 @@ let btn = document.getElementById("btn");
 btn.textContent = " 조원 선택 / " + username; */
 
 
-/* <댓글을 다는 기능> */
+/* <댓글을 다는 기능(인증 기능 포함)> */
+let writeName = document.querySelector('.write .authen .get_name');
+let writePW = document.querySelector('.write .authen .get_pw');
 let writeTextarea = document.querySelector('.write .reply_textarea');
 let writeBtn = document.querySelector('.write button');
 let replySectionList = document.querySelector('.reply_section ul');
@@ -79,23 +79,35 @@ writeBtn.addEventListener('click', async function() {
         alert('내용을 입력해주세요.')
         writeTextarea.focus();
         return
-    }
+    } else if (writeName.value === '') {
+        alert('이름을 입력해주세요.')
+        writeName.focus();
+        return
+    } else if (writePW.value === '') {
+        alert('비밀번호를 입력해주세요.')
+        writePW.focus();
+        return
+    } else {
+        let name = writeName.value;
+        let pw = writePW.value;
+        let dTStrings = replyDate();
+        let text = writeTextarea.value;
+        let date = dTStrings.dateString;
+        let time = dTStrings.timeString;
+        
+        await addDoc(collection(db, "comment"), {
+            name,
+            pw,
+            text,
+            date,
+            time,
+            timestamp: new Date(),
+        });
 
-    let dTStrings = replyDate();
-    let text = writeTextarea.value;
-    let date = dTStrings.dateString;
-    let time = dTStrings.timeString;
-    
-    await addDoc(collection(db, "comment"), {
-        text: text,
-        date: date,
-        time: time,
-        timestamp: new Date(),
-    });
-
-    alert('등록되었습니다.')
-    window.location.reload();
-    writeTextarea.value = '';
+        alert('등록되었습니다.')
+        window.location.reload();
+        writeTextarea.value = '';
+    };
 });
 // 클릭하면 input.value의 내용이 댓글란에 등록된다. 이후 input.value를 비운다. 공백인 경우 alert창이 뜬 후 input에 focus가 생긴다
 
@@ -103,12 +115,14 @@ let docs = await getDocs(query(collection(db, "comment"), orderBy("timestamp", "
 docs.forEach((doc) => {
     let row = doc.data();
     let replyId = doc.id;
-    let text = row['text']
-    let date = row['date']
-    let time = row['time']
+    let name = row['name'];
+    let text = row['text'];
+    let date = row['date'];
+    let time = row['time'];
 
     let unframedHtml = `
     <div class="texts">
+        <p class="id_reply">${name}&nbsp;님</p>
         <p class="texts_reply">${text}</p>
         <textarea class="reply_textarea">${text}</textarea>
         <p class="texts_inf">
@@ -117,6 +131,7 @@ docs.forEach((doc) => {
             <span class="reply_id">작성자 : ${replyId}</span>
             <button class="fix">수정</button>
             <button class="complete">수정 완료</button>
+            <button class="cancel">취소</button>
             <button class="delete">삭제</button>
         </p>
     </div>
@@ -134,10 +149,12 @@ async function deleteReply(target) {
     const targetId = targetIdPosition.replace(/작성자\s+:\s/, '');
     
     const userDoc = doc(db, 'comment', targetId);
-    await deleteDoc(userDoc);
-    alert('코멘트를 삭제합니다.')
-    window.location.reload();
-    
+    if(confirm('코멘트를 삭제할까요?')) {
+        await deleteDoc(userDoc);
+        window.location.reload();
+    } else {
+        return
+    }
     /*
     <db 연결 전 코드>
     const removeTarget = target.closest("li");
@@ -153,7 +170,25 @@ function fixReply(target) {
     textsReply.style.display = "none";
 
     target.style.display = "none"; // "수정" 버튼 감추기
-    target.nextSibling.nextSibling.style.display = "block"; // "수정 완료" 버튼 보이기
+    target.nextSibling.nextSibling.nextSibling.nextSibling.style.display = "inline-block"; // "취소" 버튼 보이기
+    target.nextSibling.nextSibling.style.display = "inline-block"; // "수정 완료" 버튼 보이기
+};
+
+function cancelFixReply(target) {
+    let li = target.closest("li");
+    const fixTextarea = li.querySelector(".reply_textarea");
+    const textsReply = li.querySelector(".texts_reply");
+
+    fixTextarea.value = textsReply.innerText;
+
+    fixTextarea.style.display = "none";
+    textsReply.style.display = "block";
+
+    console.log(target.previousSibling);
+
+    target.style.display = "none"; // "취소" 버튼 감추기
+    target.previousSibling.previousSibling.previousSibling.previousSibling.style.display = "inline-block";
+    target.previousSibling.previousSibling.style.display = "none"; // "수정 완료" 버튼 감추기
 };
 
 async function completeReply(target) {
@@ -163,29 +198,32 @@ async function completeReply(target) {
     const targetIdPosition = textsLi.querySelector(".reply_id").innerText;
     const targetId = targetIdPosition.replace(/작성자\s+:\s/, '');
 
-    let dTStrings = replyDate();
-    let text = fixTextarea.value;
-    let date = dTStrings.dateString;
-    let time = dTStrings.timeString;
-
-    let newReply = {
-        text: text,
-        date: date,
-        time: time,
-    };
-
     let docRef = doc(db, "comment", targetId);
     const docSnapshot = await getDoc(docRef);
 
-    if (docSnapshot.exists()) {
-        await updateDoc(docRef, newReply)
-        alert('코멘트가 수정되었습니다.')
-        window.location.reload();
+    const replyPW = docSnapshot.data().pw;
+
+    let pwConfirm = prompt("비밀번호를 입력해주세요.");
+    if(pwConfirm === replyPW) {
+        let text = fixTextarea.value
+        let newReply = {
+            text,
+        };
+    
+        if (docSnapshot.exists()) {
+            await updateDoc(docRef, newReply)
+            alert('코멘트가 수정되었습니다.')
+            window.location.reload();
+        } else {
+            alert('해당 코멘트를 찾을 수 없습니다.')
+            window.location.reload();
+        };
     } else {
-        alert('해당 코멘트를 찾을 수 없습니다.')
-        window.location.reload();
+        alert('비밀번호가 다릅니다')
         return
-    };
+    }
+
+
 
     /*
     <db 연결 전 코드> 
@@ -205,5 +243,7 @@ replySectionList.addEventListener('click', (event) => {
         fixReply(t);
     } else if (t.className === "complete") {
         completeReply(t);
+    } else if (t.className === "cancel") {
+        cancelFixReply(t);
     }
 });
