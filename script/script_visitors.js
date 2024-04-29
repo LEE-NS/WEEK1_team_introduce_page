@@ -9,7 +9,7 @@ async function setAppInfo() {
 }
 
 const firebaseConfig = {
-    apiKey: "API_KEY",
+    apiKey: "/*여기에 API KEY를 입력해주세요*/",
     authDomain: "team-introduce-page.firebaseapp.com",
     projectId: "team-introduce-page",
     storageBucket: "team-introduce-page.appspot.com",
